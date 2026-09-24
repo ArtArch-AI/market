@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "artarch": {
+      "type": "http",
+      "url": "https://api.artarch.ai/sisyphus/mcp"
+    }
+  }
+}

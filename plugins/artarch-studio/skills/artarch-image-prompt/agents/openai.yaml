@@ -1,0 +1,4 @@
+interface:
+  display_name: "ArtArch Image Prompt"
+  short_description: "Write effective prompts for ArtArch image nodes"
+  default_prompt: "Use $artarch-image-prompt to write or refine an image node prompt for this canvas."

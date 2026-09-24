@@ -1,0 +1,41 @@
+{
+  "name": "artarch-studio",
+  "version": "1.0.0",
+  "description": "Create and edit AI images, videos, ads, and visual stories in ArtArch Studio.",
+  "author": {
+    "name": "ArtArch"
+  },
+  "license": "Proprietary",
+  "keywords": [
+    "artarch",
+    "AI art",
+    "image editing",
+    "video generation",
+    "commercial advertising",
+    "creative short film"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "ArtArch Studio",
+    "shortDescription": "Create AI ads, images, edits, and short films",
+    "longDescription": "Use ArtArch as an AI creative studio for commercial advertising, image generation and cleanup, object or person removal, storyboards, themed short films, and video production. Business-level MCP tools build the supporting canvas while persistence and collaboration stay internal.",
+    "developerName": "ArtArch",
+    "category": "Creativity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://www.artarch.ai/",
+    "defaultPrompt": [
+      "Create a 15-second premium perfume commercial, including the hero visual, storyboard, and final video.",
+      "Remove the passersby from this photo while preserving the subject, composition, and background naturally.",
+      "Create a creative short film themed \"Eastern Future\"; start with the visual direction and storyboard."
+    ],
+    "brandColor": "#151515",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg",
+    "screenshots": []
+  }
+}

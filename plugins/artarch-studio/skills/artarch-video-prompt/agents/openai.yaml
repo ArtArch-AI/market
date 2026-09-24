@@ -1,0 +1,4 @@
+interface:
+  display_name: "ArtArch Video Prompt"
+  short_description: "Write production-ready prompts for ArtArch video nodes"
+  default_prompt: "Use $artarch-video-prompt to write or refine a video node prompt for this canvas."

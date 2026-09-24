@@ -1,0 +1,4 @@
+interface:
+  display_name: "ArtArch Workflow Patterns"
+  short_description: "Reusable AIGC canvas patterns for ArtArch Studio"
+  default_prompt: "Use $artarch-workflow-patterns to build a reusable, reviewable ArtArch canvas for this AIGC production workflow."

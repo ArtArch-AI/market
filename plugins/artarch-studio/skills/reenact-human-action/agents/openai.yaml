@@ -1,0 +1,4 @@
+interface:
+  display_name: "Human Action Reenactment"
+  short_description: "Build replaceable canvas-depth reenactment lanes"
+  default_prompt: "Use $reenact-human-action to split this clip, identify replaceable character and background slots, and build the verified ArtArch canvas without running generation."

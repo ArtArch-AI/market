@@ -1,0 +1,20 @@
+{
+  "name": "ArtArch Studio",
+  "name_zh": "ArtArch Studio",
+  "name_en": "ArtArch Studio",
+  "description": "Create and edit AI images, videos, ads, and visual stories in ArtArch Studio.",
+  "description_zh": "使用 ArtArch Studio 创作和编辑 AI 图片、视频、广告与视觉故事。",
+  "description_en": "Create and edit AI images, videos, ads, and visual stories in ArtArch Studio.",
+  "source": "artarch-studio",
+  "type": "mcp",
+  "version": "1.0.0",
+  "examples_zh": [
+    "为我的香水品牌设计一支 15 秒的广告短片，先做分镜",
+    "给这张产品照片设计一张电商海报"
+  ],
+  "examples_en": [
+    "Create a storyboard for a 15-second perfume ad",
+    "Design an ecommerce poster using this product photo"
+  ],
+  "minWorkbuddyVersion": "4.24.0"
+}

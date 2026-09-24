@@ -1,0 +1,4 @@
+
+# Python caches from creative asset helpers
+__pycache__/
+*.pyc

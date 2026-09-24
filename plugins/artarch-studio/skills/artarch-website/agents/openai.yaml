@@ -1,0 +1,4 @@
+interface:
+  display_name: "ArtArch Website"
+  short_description: "Build pointer and scroll-driven media sites"
+  default_prompt: "Use $artarch-website to choose pointer-driven or scroll-driven interaction, produce the required ArtArch media and bridge clips, and build the website from those assets."

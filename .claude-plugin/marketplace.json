@@ -1,0 +1,13 @@
+{
+  "name": "artarch",
+  "owner": {
+    "name": "ArtArch"
+  },
+  "plugins": [
+    {
+      "name": "artarch-studio",
+      "source": "./plugins/artarch-studio",
+      "description": "Remote ArtArch Studio MCP with browser OAuth"
+    }
+  ]
+}

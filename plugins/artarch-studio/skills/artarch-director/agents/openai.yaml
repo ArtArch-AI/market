@@ -1,0 +1,6 @@
+interface:
+  display_name: "ArtArch Director"
+  short_description: "Clarify creative intent through guided direction"
+  default_prompt: "Use $artarch-director to turn my rough idea into a confirmed creative brief."
+policy:
+  allow_implicit_invocation: false

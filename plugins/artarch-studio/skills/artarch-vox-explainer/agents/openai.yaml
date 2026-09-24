@@ -1,0 +1,4 @@
+interface:
+  display_name: "ArtArch Vox Explainer"
+  short_description: "Build narrated paper-collage explainers on ArtArch"
+  default_prompt: "Use $artarch-vox-explainer to turn this topic into a Chinese Vox-style ArtArch explainer video."

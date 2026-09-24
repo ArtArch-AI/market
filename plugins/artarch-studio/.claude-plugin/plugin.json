@@ -1,0 +1,8 @@
+{
+  "name": "artarch-studio",
+  "version": "1.0.0",
+  "description": "ArtArch Studio remote MCP with browser OAuth. No local binary required.",
+  "author": {
+    "name": "ArtArch"
+  }
+}
