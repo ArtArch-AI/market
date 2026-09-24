@@ -11,11 +11,11 @@ Recreate these maintained examples when a reviewable copy is needed:
 | Photoreal person | AIGC Pattern 05 - Photoreal Person - 20260727 | Consent, canonical identity, reference coverage, scenes |
 | Storyboard-to-video | AIGC Pattern 06 - Storyboard to Video - 20260727 | Scene contract, assets, storyboard, clean handoff, clips, delivery |
 
-In each example's working directory, select it by visible name and read it back:
+In each example's working directory, discover its IDs and read it back:
 
-- Use `artarch_project_select` with `name` and `confirmed: true`.
-- Use `artarch_canvas_select` with `name`; project scope is already selected.
-- Use `artarch_canvas_describe` with no arguments; it reads the selected canvas.
+- Use `artarch_scope_options` to find the named project's `projectId`.
+- Use `artarch_scope_options` with `projectId` to find its canvas `canvasId`.
+- Use `artarch_canvas_describe` with `projectId` and `canvasId`.
 
 Do not run these examples until the user replaces fictional inputs where
 necessary and approves prompts, models, costs, and output scope.

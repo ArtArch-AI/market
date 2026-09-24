@@ -161,8 +161,8 @@ as `后续默认执行` or `无需再问` is standing authorization within its s
 canvas, and scope. Approval of the experience or source asset alone is not run
 authorization.
 
-- Call `artarch_run` with `target`, `authorized`, and optional `wait`/
-  `timeoutSeconds`; project and canvas come from the selected MCP session.
+- Call `artarch_run` with explicit `projectId`, `canvasId`, `target`,
+  `authorized`, and optional `wait`/`timeoutSeconds`.
 
 Do not resubmit after a timeout. Before another paid attempt, diagnose the take
 and change one variable.

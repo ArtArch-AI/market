@@ -22,12 +22,14 @@ names and business concepts; the MCP server owns persistence and collaboration d
 
 ## Workflow
 
-1. Select the parent project and canvas by visible name:
+1. Discover the parent project and canvas by visible name:
 
-   - Call `artarch_scope_options` to inspect available projects and canvases.
-   - Call `artarch_project_select` only after explicit approval to reuse a project.
-   - Call `artarch_canvas_select` to select the existing whiteboard, or
-     `artarch_whiteboard_create` to create one after explicit approval.
+   - Call `artarch_scope_options` to obtain `projectId`, then list its
+     canvases with `artarch_scope_options` (`projectId`) to obtain `canvasId`.
+   - Obtain approval before reusing a project or creating a board with
+     `artarch_whiteboard_create` (`projectId`, `name`, `confirmed: true`).
+   - Pass both IDs to every browse, link, and mutation call; never rely on a
+     session selection.
 
 2. Inspect the selected whiteboard:
 

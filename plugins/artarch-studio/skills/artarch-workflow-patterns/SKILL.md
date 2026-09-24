@@ -39,10 +39,10 @@ user wants the maintained example canvases. Read
 
 Before applying a pattern:
 
-1. In the production directory, select the project and canvas by visible name
-   with `artarch_project_select` (`name`, `confirmed: true`) and
-   `artarch_canvas_select` (`name`). Inspect the selected canvas with
-   `artarch_canvas_describe`, or create
+1. In the production directory, discover the project and canvas by visible
+   name with `artarch_scope_options` (pass `projectId` to list canvases), retain
+   both IDs and pass them to every tool. Inspect the canvas with
+   `artarch_canvas_describe` (`projectId`, `canvasId`), or create
    a separate named project and canvas when the pattern must remain independently
    reviewable.
 2. Run `artarch_node_kinds` and verify every selected kind, model, input, output,
@@ -58,7 +58,7 @@ Before applying a pattern:
    [Studio generation approval rules](../artarch-studio/SKILL.md#generation)
    before every node submission: explain its purpose, disclose expected credits,
    and wait for approval. Batch runs require explicit informed batch authorization.
-7. Node mutations auto-layout their selected or explicitly scoped canvas;
+7. Node mutations auto-layout their explicitly scoped canvas;
    `artarch_canvas_batch` includes layout in the same persisted batch. Check
    the mutation's layout outcome or batch version, then read back the canvas;
    do not repeat `artarch_canvas_layout` after every node. If an additional

@@ -93,8 +93,8 @@ Before returning the prompt, verify that:
 
 Update an existing node after confirming its business settings:
 
-- Use `artarch_node_configure` with `node`, optional `kind`/`name`, and the
-  verified `settings`; project and canvas come from the selected MCP session.
+- Use `artarch_node_configure` with explicit `projectId`, `canvasId`, `node`,
+  optional `kind`/`name`, and the verified `settings`.
 
 Use only the configuration fields and values returned by `artarch_node_kinds`.
 

@@ -48,33 +48,37 @@ Typical requests include:
 Ask only for missing creative constraints that materially change the result.
 Do not make the user design nodes or explain the canvas implementation.
 
-## Session scope
+## Request scope
 
-- Each client connection owns an independent remote ArtArch MCP session.
-- Start with `artarch_session_context` or `artarch_scope_options`.
-- Refer to projects and canvases by visible name.
+- Project and canvas operations use explicit `projectId` and `canvasId` on
+  every call. Do not depend on a connection's selected project or canvas.
+- Get project IDs from `artarch_scope_options` or `artarch_project_create`;
+  list a project's canvases with `artarch_scope_options` (`projectId`) or
+  create one with `artarch_canvas_create` (`projectId`, `name`, `confirmed`).
+  Canvas responses and links include both IDs for subsequent calls.
+- Keep verified IDs in the conversation so a reconnect can resume without
+  selecting anything. Never guess IDs or ask the user to supply them.
+- Refer to projects and canvases by visible name when speaking with the user.
 - Start a new request in a new project by default. Reuse an existing project only
   when the user explicitly asks for reuse or the request clearly continues that
   project's work.
 - When reuse is justified, show its name and get explicit approval before
-  selecting it.
-- Select one project for the session. Do not silently switch projects.
-- Selecting a canvas automatically prepares persistence and live collaboration.
+  operating on it. Confirm the project/canvas pair before parallel edits.
 
 ## Canvas work
 
-1. Inspect the session with `artarch_session_context` or
-   `artarch_scope_options`; project and canvas scope is session-owned.
-2. Create a project with `artarch_project_create` (`name`, `confirmed: true`),
-   or reuse one with `artarch_project_select` (`name`, `confirmed: true`).
-3. Create a canvas with `artarch_canvas_create` (`name`, `confirmed: true`), or
-   select one with `artarch_canvas_select` (`name`).
+1. Discover the project via `artarch_scope_options` or create it with
+   `artarch_project_create` (`name`, `confirmed: true`); retain `projectId`.
+2. Discover a canvas via `artarch_scope_options` (`projectId`), or create it
+   with `artarch_canvas_create` (`projectId`, `name`, `confirmed: true`);
+   retain `canvasId`.
 4. Call `artarch_node_kinds` to discover visible node kinds and settings.
 5. Use `artarch_node_add`, `artarch_node_configure`, and
-   `artarch_node_remove` with visible names.
-6. Use `artarch_node_connect` with source name, target name, target slot, and
+   `artarch_node_remove` with both IDs and visible names.
+6. Use `artarch_node_connect` with both IDs, source name, target name, target slot, and
    optional 1-based list positions.
 7. For several related node and connection changes, use `artarch_canvas_batch`
+   (`projectId`, `canvasId`)
    instead of separate mutations. Review the operations with the user and pass
    `confirmed: true` only after explicit confirmation. Its ordered `addNode`,
    `configureNode`, `removeNode`, `connect`, and `disconnect` operations use visible
@@ -84,7 +88,7 @@ Do not make the user design nodes or explain the canvas implementation.
    does not run generation. Media uploads occur separately before graph
    persistence and may remain if a later operation fails, so verify scope and
    media before submitting and do not blindly retry a failed batch.
-8. Call `artarch_canvas_describe` to verify the business result.
+8. Call `artarch_canvas_describe` with both IDs to verify the business result.
 
 Treat every returned `options` list as a closed enum already filtered for the
 current membership. Pass the exact `option.value`; use `option.label` only for
@@ -126,10 +130,10 @@ Do not construct graph objects or synchronization messages. Do not infer a
 setting name when `artarch_node_kinds` can return the supported business slots.
 
 When the user wants a guided requirement-to-canvas flow, use
-`artarch_render_canvas_brief` after selecting a canvas. The form sends one
+`artarch_render_canvas_brief` with the target projectId and canvasId. The form sends one
 state plus Jev's typed Choice, Score, and Noul questions to
-`artarch_canvas_brief_prepare`, then shows probabilities, confidence, and a
-MCP tool plan. Ask for confirmation before `artarch_canvas_brief_apply`; it
+`artarch_canvas_brief_prepare` with explicit `projectId` and `canvasId`, then shows probabilities, confidence, and a
+MCP tool plan. Ask for confirmation before `artarch_canvas_brief_apply` with the same IDs; it
 only creates and connects nodes and never starts generation. A live Jev call is performed by the authenticated MCP service. If the MCP
 connection is unavailable, stop and report the connection error.
 
@@ -205,12 +209,13 @@ canvas status; the request may already have been accepted. If acceptance cannot
 be determined, disclose the possible duplicate charge and stop for a decision.
 Do not resubmit merely to switch from synchronous to asynchronous mode.
 
-`artarch_run` waits inside the MCP process by default until the run reaches a
-terminal state; prefer this for a single synchronous run. For an approved
-canvas-wide batch or an explicit request for asynchronous progress, use
-`wait: false` and track the returned run ID (`runReference`). For a previously
+`artarch_run` requires both IDs and returns a `runReference` immediately by default. Record it before
+checking progress; do not set `wait: true` for video generation because long
+HTTP requests can disconnect after the run has already been accepted. An
+explicit synchronous wait is limited to 45 seconds and still returns the
+reference when the wait expires. For a previously
 interrupted run, recover its existing `runReference` instead of calling
-`artarch_run` again. Poll `artarch_run_status` with that same `runReference`;
+`artarch_run` again. Poll `artarch_run_status` with both IDs and that same `runReference`;
 never resubmit merely because generation is queued or running. When
 polling is feasible, sleep or schedule a wait of about 15 seconds before each
 video status check, or about 5 seconds before each image status check; use a
@@ -218,9 +223,10 @@ host-provided timer or wait tool rather than rapid repeated calls. If the host
 cannot wait or poll in the background, do
 not busy-wait or spend repeated conversation turns polling; retain the run
 references and check again when the host permits. If the MCP server exposes
-`artarch_canvas_run_progress`, use it to list the selected canvas's running
-nodes and progress; otherwise rely on per-run `artarch_run_status` and do not
-claim a canvas-wide progress listing is available. Show only assets with a
+`artarch_canvas_run_progress`, call that named tool with both IDs to list the
+canvas's running nodes and progress; otherwise rely on per-run
+`artarch_run_status`. Do not try an unadvertised operation name through
+`artarch_read` or claim canvas-wide progress is available. Show only assets with a
 non-empty HTTP(S) URL; pending or empty results must not be rendered as media.
 Run and status calls synchronize execution state, completed outputs, downstream
 inputs, history cards, and resumable canvas metadata back to the selected canvas;
@@ -241,17 +247,16 @@ are allowed only when the session has an active goal or the user explicitly
 says they only need a final result and authorizes creative adjustments. Never
 describe the fallback as the original character or a faithful reproduction.
 
-After selecting or creating a canvas, present its visible name as a Markdown
+After identifying or creating a canvas, present its visible name as a Markdown
 link using `canvasUrl`, and open that URL in the Codex right sidebar when the
 host provides a sidebar browser capability. Before asking for generation
 authorization, link the canvas name again so the user can inspect it. Never open
 the system browser for this workflow.
 
-Canvas links are session-scoped. After any project or canvas selection, discard
-all earlier canvas URLs and call `artarch_canvas_link` (or use the URL from the
-immediately preceding canvas tool result). Never copy a URL from the user
-message, an older turn, another thread, or a different project. Before sharing
-the link, verify its returned project and canvas names match the current task.
+Canvas links are derived from explicit `projectId` and `canvasId`, not a session
+selection. Call `artarch_canvas_link` with both IDs (or use the URL returned by
+the immediately preceding canvas tool call). Do not reuse a link from another
+project or canvas; verify the IDs returned with the link before sharing it.
 
 ## Remote media upload
 

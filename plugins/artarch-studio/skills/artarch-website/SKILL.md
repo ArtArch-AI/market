@@ -70,9 +70,10 @@ scaffolding frontend code, starting paid generation, or replacing assets.
 2. If no frontend exists, create a local project in the requested work directory
    with the smallest appropriate stack available in the environment. Do not
    create or deploy it through another media platform's CLI.
-3. Bind that work directory to the relevant ArtArch project and canvas. If none
-   exists and generation is required, create it with `artarch_scope_options`, select it in the website directory, then create and select a
-   canvas by visible name.
+3. Record the relevant ArtArch `projectId` and `canvasId` alongside the work directory.
+   If none exists and generation is required, discover projects and canvases with
+   `artarch_scope_options`, or create them with `artarch_project_create` and
+   `artarch_canvas_create`. Pass both IDs on every scoped request.
 4. The current ArtArch MCP server has no website create, repository, or deployment
    subcommands. Never invent `the appropriate ArtArch MCP tool`. Deploy only through an
    existing repository-owned workflow; otherwise deliver a verified local URL.
@@ -85,14 +86,12 @@ explicit product contract.
 ## Phase 1: Inspect and agree the design
 
 1. Inspect the repository, current worktree, and local instructions.
-2. Verify the ArtArch account. Inspect or bind the canvas, then list its structure
+2. Verify the ArtArch account. Discover the canvas IDs, then list its structure
    and nodes:
 
-   - Call `artarch_session_context` or `artarch_scope_options` with only their
-     optional query fields; project/canvas scope is session-owned.
-   - Call `artarch_project_select` with `name` and `confirmed: true` when
-     reusing a project, then `artarch_canvas_select` with `name`.
-   - Call `artarch_canvas_describe` with no arguments, then
+   - Call `artarch_scope_options` to find `projectId`; pass `projectId` to list
+     canvases and find `canvasId`. Reuse a project only with user approval.
+   - Call `artarch_canvas_describe` with `projectId` and `canvasId`, then
      `artarch_node_kinds` with an optional `query`.
 
 3. Read existing run results before starting paid work. Record the source node,
@@ -204,10 +203,10 @@ and to the exception for explicitly authorized batch execution.
 
 After authorization, start or continue the run:
 
-- Call `artarch_node_configure` with `node`, optional `kind`/`name`, and verified
-  `settings`; project and canvas come from the selected MCP session.
-- Call `artarch_run` with `target`, `authorized`, and optional `wait`/
-  `timeoutSeconds`; project and canvas come from the selected MCP session.
+- Call `artarch_node_configure` with `projectId`, `canvasId`, `node`, optional
+  `kind`/`name`, and verified `settings`.
+- Call `artarch_run` with `projectId`, `canvasId`, `target`, `authorized`, and
+  optional `wait`/`timeoutSeconds`.
 
 After a timeout, continue the existing run. Never submit a duplicate run just
 because waiting was interrupted. Before another paid attempt, diagnose the first

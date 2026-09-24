@@ -174,13 +174,13 @@ for each node, including upstream dependencies: explain its purpose, disclose
 expected credits, and wait for explicit approval. Apply the same rules to retries
 and to the exception for explicitly authorized batch execution.
 
-- Use `artarch_node_configure` with `node`, optional `kind`/`name`, and verified
-  `settings`; project and canvas come from the selected MCP session.
-- Use `artarch_run` with `target`, `authorized`, and optional `wait`/
-  `timeoutSeconds`; project and canvas come from the selected MCP session.
+- Use `artarch_node_configure` with explicit `projectId`, `canvasId`, `node`,
+  optional `kind`/`name`, and verified `settings`.
+- Use `artarch_run` with explicit `projectId`, `canvasId`, `target`, `authorized`,
+  and optional `wait`/`timeoutSeconds`.
 
 Download accepted output URLs only when the user wants local artifacts. On timeout, continue
-with the `artarch_run_status` for the existing run instead of starting another run.
+with `artarch_run_status` (`projectId`, `canvasId`, `runReference`) for the existing run instead of starting another run.
 
 ## Return
 
