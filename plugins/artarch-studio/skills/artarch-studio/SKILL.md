@@ -72,7 +72,9 @@ Do not make the user design nodes or explain the canvas implementation.
 2. Discover a canvas via `artarch_scope_options` (`projectId`), or create it
    with `artarch_canvas_create` (`projectId`, `name`, `confirmed: true`);
    retain `canvasId`.
-4. Call `artarch_node_kinds` to discover visible node kinds and settings.
+4. Before every node add or configure, call `artarch_node_kinds` for the target
+   kind (use its exact visible kind name) and read the available slot names,
+   types, required flags, and enum options.
 5. Use `artarch_node_add`, `artarch_node_configure`, and
    `artarch_node_remove` with both IDs and visible names.
 6. Use `artarch_node_connect` with both IDs, source name, target name, target slot, and
@@ -94,7 +96,11 @@ Treat every returned `options` list as a closed enum already filtered for the
 current membership. Pass the exact `option.value`; use `option.label` only for
 display. Never invent or silently substitute a model, aspect ratio, resolution,
 quality, duration, or mode. If validation rejects a value, show the specific
-error and call `artarch_node_kinds` again before retrying.
+error and call `artarch_node_kinds` again before retrying. Use the returned slot
+name and expected value type. MCP corrects unambiguous formats such as numeric
+strings, true/false strings, and enum capitalization or surrounding whitespace.
+Unknown slot names, values that cannot be converted, and unsupported enum values
+return a field-specific explanation. Do not guess a replacement field or value.
 
 For generation nodes exposing `aspect_ratio`, change the output shape with
 `settings: {"aspect_ratio": "9:16"}` only when that exact value is offered for
