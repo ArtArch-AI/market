@@ -94,9 +94,13 @@ Do not make the user design nodes or explain the canvas implementation.
    does not run generation. Media uploads occur separately before graph
    persistence and may remain if a later operation fails, so verify scope and
    media before submitting and do not blindly retry a failed batch.
-7. Call `artarch_canvas_describe` with both IDs for node summaries; supply a
-   returned `nodeId` to inspect only that node's saved settings, execution
-   state, results, and adjacent connections. Saved state is not live progress.
+7. Call `artarch_canvas_describe` with both IDs for node summaries, the current
+   canvas credit estimate, and the current balance. Supply a returned `nodeId`
+   to inspect only that node's saved settings, execution state, results,
+   adjacent connections, and its current credit estimate. Call
+   `artarch_balance` when only the account balance is needed. Saved state is
+   not live progress; an unavailable estimate must remain unknown and must not
+   be treated as zero.
 
 Treat every returned `options` list as a closed enum already filtered for the
 current membership. Pass the exact `option.value`; use `option.label` only for
