@@ -18,10 +18,13 @@ ArtArch MCP tools only when the user requests a canvas change.
 
 ## Prepare
 
-1. Inspect the bound canvas with `artarch_canvas_describe` and locate the target
-   from the returned visible node names.
-2. Run `artarch_node_kinds` to confirm the selected image node's models, settings,
-   aspect ratios, quality options, and accepted inputs. Never invent an option.
+1. Inspect the canvas with `artarch_canvas_describe` (`projectId`, `canvasId`)
+   for node summaries. Use its `nodeId` for the target's saved settings, results,
+   and adjacent connections; this is not live run progress.
+2. Use `artarch_node_kinds` to discover a kind, then
+   `artarch_node_kind_details` (`kind`, optional `model`) to confirm its
+   parameter keys, models, aspect ratios, quality options, and accepted inputs.
+   Reuse details for repeat nodes; query again for a new model. Never invent an option.
 3. Classify the task as generation, reference edit, inpaint instruction, or
    multi-reference composition.
 4. Identify the asset type, aspect ratio, output size, quality intent, references,
@@ -96,7 +99,8 @@ Update an existing node after confirming its business settings:
 - Use `artarch_node_configure` with explicit `projectId`, `canvasId`, `node`,
   optional `kind`/`name`, and the verified `settings`.
 
-Use only the configuration fields and values returned by `artarch_node_kinds`.
+Use only the parameter keys and values returned by `artarch_node_kind_details`.
+Retain the `nodeId` returned by `artarch_node_configure` for focused saved-state readback.
 
 ## Return
 

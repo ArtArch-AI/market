@@ -163,8 +163,10 @@ The 2026-08-07 node-catalog review verified these building blocks:
 | Stable accepted clip for downstream reuse | Video Input |
 | Ordered clip assembly | Video sequence output |
 
-This table is evidence, not a permanent allowlist. Re-read `artarch_node_kinds`
-before constructing a canvas and verify exact business slots before connecting.
+This table is evidence, not a permanent allowlist. Discover types with
+`artarch_node_kinds` and query `artarch_node_kind_details` for each selected kind
+and model before construction; reuse details for repeat nodes and refresh on
+model changes. Verify exact business slots before connecting.
 
 ## Approval and acceptance
 

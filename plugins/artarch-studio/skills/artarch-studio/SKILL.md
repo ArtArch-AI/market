@@ -72,14 +72,18 @@ Do not make the user design nodes or explain the canvas implementation.
 2. Discover a canvas via `artarch_scope_options` (`projectId`), or create it
    with `artarch_canvas_create` (`projectId`, `name`, `confirmed: true`);
    retain `canvasId`.
-4. Before every node add or configure, call `artarch_node_kinds` for the target
-   kind (use its exact visible kind name) and read the available slot names,
-   types, required flags, and enum options.
-5. Use `artarch_node_add`, `artarch_node_configure`, and
-   `artarch_node_remove` with both IDs and visible names.
-6. Use `artarch_node_connect` with both IDs, source name, target name, target slot, and
+3. Discover candidate type names and function summaries with `artarch_node_kinds`
+   (optional `query`). For each selected kind, call `artarch_node_kind_details`
+   (`kind` required, `model` optional) to get parameter keys, names, types,
+   descriptions, options, and model constraints. Reuse those details for other
+   nodes of the same kind and model in this task; do not re-query the full
+   catalog per node. When changing a model, query details for that model.
+4. Use `artarch_node_add`, `artarch_node_configure`, and
+   `artarch_node_remove` with both IDs and visible names. Add/configure returns
+   `nodeId`; retain it for focused readback.
+5. Use `artarch_node_connect` with both IDs, source name, target name, target slot, and
    optional 1-based list positions.
-7. For several related node and connection changes, use `artarch_canvas_batch`
+6. For several related node and connection changes, use `artarch_canvas_batch`
    (`projectId`, `canvasId`)
    instead of separate mutations. Review the operations with the user and pass
    `confirmed: true` only after explicit confirmation. Its ordered `addNode`,
@@ -90,24 +94,28 @@ Do not make the user design nodes or explain the canvas implementation.
    does not run generation. Media uploads occur separately before graph
    persistence and may remain if a later operation fails, so verify scope and
    media before submitting and do not blindly retry a failed batch.
-8. Call `artarch_canvas_describe` with both IDs to verify the business result.
+7. Call `artarch_canvas_describe` with both IDs for node summaries; supply a
+   returned `nodeId` to inspect only that node's saved settings, execution
+   state, results, and adjacent connections. Saved state is not live progress.
 
 Treat every returned `options` list as a closed enum already filtered for the
 current membership. Pass the exact `option.value`; use `option.label` only for
 display. Never invent or silently substitute a model, aspect ratio, resolution,
-quality, duration, or mode. If validation rejects a value, show the specific
-error and call `artarch_node_kinds` again before retrying. Use the returned slot
-name and expected value type. MCP corrects unambiguous formats such as numeric
-strings, true/false strings, and enum capitalization or surrounding whitespace.
+quality, duration, or mode. Do not recommend the Wan3 membership edition.
+If validation rejects a value, show the specific
+error and refresh `artarch_node_kind_details` for the selected kind and model
+before retrying. Use the returned parameter key and expected value type. MCP
+corrects unambiguous formats such as numeric strings, true/false strings, and
+enum capitalization or surrounding whitespace.
 Unknown slot names, values that cannot be converted, and unsupported enum values
 return a field-specific explanation. Do not guess a replacement field or value.
 
 For generation nodes exposing `aspect_ratio`, change the output shape with
 `settings: {"aspect_ratio": "9:16"}` only when that exact value is offered for
 the selected model. This applies to add, configure, and batch operations.
-Inspect the result with `artarch_canvas_describe` before running generation. A
-parameter update does not regenerate existing outputs or change their actual
-media dimensions.
+Inspect the returned `nodeId` with `artarch_canvas_describe` before running
+generation. A parameter update does not regenerate existing outputs or change
+their actual media dimensions.
 
 When changing a model, inspect its available settings and explicitly supply
 the desired supported resolution, quality, duration, mode, and aspect ratio
@@ -115,9 +123,9 @@ where applicable. Do not assume a model-only update resets dependent settings.
 Whiteboard card geometry is separate from generation settings: use whiteboard
 editing operations for card size and placement, not `settings.aspect_ratio`.
 
-For a selected model, inspect `option.constraints.inputLimits` before connecting
-reference media. It may specify image, video, or audio counts, per-video and
-total reference duration, accepted audio formats, or whether audio may be the
+For a selected model, inspect its `artarch_node_kind_details` constraints
+before connecting reference media. They may specify image, video, or audio
+counts, per-video and total reference duration, accepted audio formats, or whether audio may be the
 only reference. Model descriptions are retained when a registry has not yet
 published a fully structured limit. Treat missing limits as unknown; never
 guess a limit or add duplicate references just to satisfy an error. Run-time
@@ -135,7 +143,7 @@ The MCP server uploads the media into
 the project and writes the CDN URL to the input node before persisting it.
 Do not also set the node's image/video setting when passing `media`. An
 existing project-owned CDN URL can instead be supplied through the visible
-business setting returned by `artarch_node_kinds` without reuploading.
+business parameter key returned by `artarch_node_kind_details` without reuploading.
 
 `artarch_asset_upload` remains optional for Image/Video Input: use it when the
 asset must be uploaded independently or reused across nodes. For local audio,
@@ -146,7 +154,7 @@ server cannot read the caller's files. Uploads accept at most 100 MiB and
 apply SSRF checks to public HTTPS source URLs. Do not bypass those checks.
 
 Do not construct graph objects or synchronization messages. Do not infer a
-setting name when `artarch_node_kinds` can return the supported business slots.
+setting name when `artarch_node_kind_details` provides supported parameter keys.
 
 When the user wants a guided requirement-to-canvas flow, use
 `artarch_render_canvas_brief` with the target projectId and canvasId. The form sends one
@@ -233,26 +241,25 @@ checking progress; do not set `wait: true` for video generation because long
 HTTP requests can disconnect after the run has already been accepted. An
 explicit synchronous wait is limited to 45 seconds and still returns the
 reference when the wait expires. For a previously
-interrupted run, recover its existing `runReference` instead of calling
-`artarch_run` again. Poll `artarch_run_status` with both IDs and that same `runReference`;
-never resubmit merely because generation is queued or running. When
+interrupted run, recover its existing `runReference`/`runId` instead of calling
+`artarch_run` again. Never resubmit merely because generation is queued or
+running. When
 polling is feasible, sleep or schedule a wait of about 15 seconds before each
 video status check, or about 5 seconds before each image status check; use a
 host-provided timer or wait tool rather than rapid repeated calls. If the host
 cannot wait or poll in the background, do
 not busy-wait or spend repeated conversation turns polling; retain the run
-references and check again when the host permits. If the MCP server exposes
-`artarch_canvas_run_progress`, call that named tool with both IDs to list the
-canvas's running nodes and progress. For a known run ID, prefer
-`artarch_run_progress` with `projectId`, `canvasId`, and `runId`; it returns
-that run's progress without a canvas-wide query. Use `artarch_run_status` when
-the completed result must also be synchronized back to the canvas. Do not try
-an unadvertised operation name through
-`artarch_read` or claim canvas-wide progress is available. Show only assets with a
+references and check again when the host permits. For a known run ID, use
+`artarch_run_progress` with `projectId`, `canvasId`, and `runId` to see live
+progress and results; add `nodeId` to avoid returning other stages. Use
+`artarch_canvas_run_progress` with both IDs when you
+need a canvas-wide list of running nodes. `artarch_canvas_describe` reports
+saved state, not a live poll. Use `artarch_run_status` when the completed
+result must also be synchronized back to the canvas. Show only assets with a
 non-empty HTTP(S) URL; pending or empty results must not be rendered as media.
-Run and status calls synchronize execution state, completed outputs, downstream
-inputs, history cards, and resumable canvas metadata back to the selected canvas;
-do not recreate that write-back manually.
+Use `artarch_run_progress` for live progress, `artarch_canvas_describe` for
+saved node state, and `artarch_run_status` when the result needs to be reflected
+on the canvas.
 
 When a run fails, report the exact business step, error code, and message from
 `errors`; never reduce it to a generic generation failure. When a result
@@ -297,7 +304,8 @@ the node to its consumer, and read the canvas back.
 ## Whiteboards
 
 Use `artarch_whiteboard_create` to create a blank tool-canvas whiteboard and
-`artarch_whiteboard_nodes` to inspect its visible items. Whiteboards use the
+`artarch_whiteboard_nodes` (`projectId`, `canvasId`) to inspect its visible items;
+pass `nodeId` to inspect a single known item. Whiteboards use the
 MCP's versioned flow operation contract: updates are applied as
 ordered `removeNode`/`addNode` or `removeEdge`/`addEdge` pairs, and the reserved
 `_toolcanvas_whiteboard_document_v1_` metadata node must never be edited or

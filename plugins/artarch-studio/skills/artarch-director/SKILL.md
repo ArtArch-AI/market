@@ -58,8 +58,10 @@ After the user opts in, before asking questions:
 1. Read the conversation and preserve every decision already made.
 2. Inspect relevant repository files and the bound canvas with non-mutating
    commands such as `artarch_scope_options` and `artarch_canvas_describe`.
-3. Use `artarch_node_kinds` only when available node capabilities affect a creative
-   choice.
+3. When capabilities affect a creative choice, use `artarch_node_kinds` to
+   discover candidate kinds, then `artarch_node_kind_details` for the selected
+   kind/model's parameters, options, and constraints. Reuse details within
+   the task; refresh when changing models.
 4. Mark references or results as observed, user-reported, or unavailable. Never
    claim to have inspected media that cannot actually be inspected.
 5. Remove questions whose answers are already present in the environment.

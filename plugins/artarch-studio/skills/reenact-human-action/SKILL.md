@@ -48,9 +48,10 @@ tracking model.
 
 ## Verify The Live Node Catalog
 
-Run `artarch_node_kinds` immediately before construction. Verify the selected
-node kinds, business slots, durations, aspect ratio, resolution, audio support, and model
-options. The currently observed topology uses:
+Run `artarch_node_kinds` to discover kinds, then `artarch_node_kind_details`
+for each selected kind/model to verify business slots, durations, aspect ratio,
+resolution, audio support, and options. Reuse the same details for repeated
+nodes, and refresh when changing models. The currently observed topology uses:
 
 - Video Input for each prepared source segment;
 - Audio Input for each matching WAV segment when the chosen model accepts audio;

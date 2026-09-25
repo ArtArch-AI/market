@@ -43,8 +43,11 @@ is the actual runtime prompt source.
 
 ## Model and setting verification
 
-Before adding or updating nodes, inspect `artarch_node_kinds`. As of the maintained
-examples, the verified core types are:
+Discover types and their function summaries with `artarch_node_kinds`, then
+inspect `artarch_node_kind_details` for each selected kind and model before
+adding or updating nodes. Reuse the same kind/model details within a task;
+query again when changing the model. As of the maintained examples, the
+verified core types are:
 
 - Text Input for visible prompt contracts;
 - Text to Image for canonical stills;
@@ -53,8 +56,9 @@ examples, the verified core types are:
 - Video sequence output for ordered clip delivery through one-based Videos
   positions.
 
-Treat this list as an example, not a permanent allowlist. Re-read the node catalog
-before every new canvas because models and settings can change.
+Treat this list as an example, not a permanent allowlist. Discover kinds for a
+new canvas and use the selected type's details for exact parameter keys,
+descriptions, options, and model-specific limits.
 
 For final-frame extraction, configure the visible Frame setting as numeric `-1`.
 For Seedance 2.0 and
@@ -77,12 +81,14 @@ Canvas construction does not authorize generation.
 
 After writes, run:
 
-- Use `artarch_canvas_describe` with no arguments; project and canvas scope are
-  already selected in the MCP session.
+- Use `artarch_canvas_describe` with `projectId` and `canvasId` for node
+  summaries. After add/configure, pass the returned `nodeId` for that node's
+  saved settings, execution state, results, and adjacent connections.
 
 Verify project name, visible node names and kinds, groups, and business connections. After a
-run, verify the persisted terminal status and artifact URL. Resume timed-out runs
-with `artarch_run_status`; do not create a duplicate run.
+run, verify the terminal result and artifact URL with `artarch_run_progress`
+(`projectId`, `canvasId`, `runId`). The canvas readback shows saved state, not
+live progress; do not create a duplicate run.
 
 ## Quality gates
 

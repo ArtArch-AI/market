@@ -14,7 +14,7 @@ retries require the handling specified there. These rules also apply to all
 execution stages and examples below.
 
 Produce a compact shooting brief for one video node. Keep model and provider claims
-out of the prompt unless `artarch_node_kinds` verifies them for the selected node.
+out of the prompt unless `artarch_node_kind_details` verifies them for the selected kind and model.
 
 Hold the current story state across revisions: subject, look, references, decided
 constraints, accepted footage, and prior failures. Change only what the user's
@@ -42,10 +42,14 @@ than one generation can clearly hold. Before writing the current clip, establish
 
 1. Identify the goal, production phase, target node, duration, aspect ratio,
    references, audio needs, deliverable, and safety or rights risks.
-2. Inspect the canvas with `artarch_canvas_describe` and locate the target node with
-   `artarch_canvas_describe`.
-3. Run `artarch_node_kinds` and confirm the node's business slots, models, duration, aspect
-   ratio, audio, and other exposed settings. Treat availability as node-specific;
+2. Inspect the canvas with `artarch_canvas_describe` (`projectId`, `canvasId`)
+   for summaries, then pass the target's `nodeId` for its saved settings,
+   execution, results, and adjacent connections; this is not live progress.
+3. Discover a kind with `artarch_node_kinds`, then query
+   `artarch_node_kind_details` (`kind`, optional `model`) for parameter keys,
+   options, duration, aspect ratio, audio, and model constraints. Reuse details
+   for the same kind/model in this task, and refresh when changing models.
+   Treat availability as node-specific;
    never infer a capability from a provider or model name.
 4. Choose the mode from the actual connected inputs: text-to-video,
    image-to-video, video-reference, first-and-last-frame, edit, or continuation.
@@ -175,7 +179,8 @@ expected credits, and wait for explicit approval. Apply the same rules to retrie
 and to the exception for explicitly authorized batch execution.
 
 - Use `artarch_node_configure` with explicit `projectId`, `canvasId`, `node`,
-  optional `kind`/`name`, and verified `settings`.
+  optional `kind`/`name`, and verified `settings`. Retain the returned `nodeId`
+  for focused saved-state readback.
 - Use `artarch_run` with explicit `projectId`, `canvasId`, `target`, `authorized`,
   and optional `wait`/`timeoutSeconds`.
 

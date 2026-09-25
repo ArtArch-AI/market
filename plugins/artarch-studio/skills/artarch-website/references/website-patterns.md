@@ -87,7 +87,7 @@ shot B video -> extracted first frame ---/
 
 Assign the previous final frame as the bridge opening-state authority and the
 next first frame as the bridge endpoint authority, using only business slots and
-connections verified by `artarch_node_kinds`. Prompt one motivated transition
+connections verified by `artarch_node_kind_details`. Prompt one motivated transition
 with continuous camera direction, motion vector, subject position, lighting,
 horizon, and color. The bridge must visibly leave A and arrive at B; it must not
 be a disguised crossfade, morphing accident, or unrelated spectacle.

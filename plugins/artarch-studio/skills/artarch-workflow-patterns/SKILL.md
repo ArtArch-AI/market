@@ -45,8 +45,10 @@ Before applying a pattern:
    `artarch_canvas_describe` (`projectId`, `canvasId`), or create
    a separate named project and canvas when the pattern must remain independently
    reviewable.
-2. Run `artarch_node_kinds` and verify every selected kind, model, input, output,
-   aspect ratio, quality, resolution, duration, and audio option.
+2. Use `artarch_node_kinds` to discover kind names and function summaries, then
+   `artarch_node_kind_details` for each selected kind (and `model` when selected)
+   to verify parameters, inputs, outputs, options, and model constraints. Reuse
+   details for the same kind/model in this task; refresh on model changes.
 3. Assign every reference one primary role and connect it explicitly. Spatial
    proximity is not a dependency.
 4. Keep the canvas left-to-right. Put inputs and contracts left, canonical assets
@@ -114,8 +116,10 @@ Report the created project and canvas names.
 - Track the returned `runReference`; sleep or schedule a host wait of about
   15 seconds for video or 5 seconds for images between `artarch_run_status`
   calls when feasible. Use
-  `artarch_canvas_run_progress` to list running nodes only if the MCP server
-  exposes it. Do not busy-wait when background polling is unavailable; on a
+  `artarch_run_progress` (`projectId`, `canvasId`, `runId`; add `nodeId` to
+  narrow one stage) for live progress,
+  or `artarch_canvas_run_progress` with both IDs to list running nodes across
+  the canvas. Do not busy-wait when background polling is unavailable; on a
   timeout, check the existing run rather than resubmitting a paid generation.
 - Read back the terminal node result and artifact URL. An accepted HTTP response
   or submitted run alone does not prove delivery.

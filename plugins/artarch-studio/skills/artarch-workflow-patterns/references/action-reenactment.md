@@ -31,7 +31,9 @@ the workflow.
 
 ## Business Node Contract
 
-Re-read `artarch_node_kinds` before construction. The currently observed pattern
+Discover kinds with `artarch_node_kinds`, then inspect `artarch_node_kind_details`
+for each selected kind and model; reuse details for repeat nodes and refresh on
+model changes. The currently observed pattern
 uses:
 
 - Video Input -> Depth Video Analysis through the Video slot;
@@ -43,7 +45,7 @@ uses:
 - generated clips -> consecutive Videos positions on Video sequence output in
   source order.
 
-Verify every business slot against the live node catalog. Use the exact prepared segment duration
+Verify every business slot and model constraint against the selected kind's details. Use the exact prepared segment duration
 only if the chosen model supports it. The runtime accepts one authoritative Depth
 video reference for this pattern even when the node catalog advertises more video slots.
 For Seedance 2.0 (`doubao-seedance-2-0-260128`) and Seedance 2.0 Fast

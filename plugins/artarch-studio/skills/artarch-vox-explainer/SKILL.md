@@ -63,8 +63,10 @@ Chinese character before accepting a keyframe.
 
 ## Adapt the living poster to MiniMax H3
 
-Use the visible first-and-last-frame video kind only if `artarch_node_kinds` still lists
-`MiniMax-H3`. Verify its aspect ratios, resolution, duration, audio behavior, and
+Use the visible first-and-last-frame video kind only after discovering it with
+`artarch_node_kinds` and verifying `MiniMax-H3` with
+`artarch_node_kind_details` (`kind`, `model`). Verify its aspect ratios,
+resolution, duration, audio behavior, and
 credits at execution time; never freeze those values into the skill as permanent
 facts.
 
@@ -91,7 +93,7 @@ Lay the project out left to right:
 `brief and script -> keyframe pairs -> MiniMax H3 clips -> narration/music -> sequence -> delivery`
 
 Group nodes by beat or production stage. Connect every dependency explicitly and
-use exact business slots from `artarch_node_kinds`; node proximity is not a dependency.
+use exact business slots from `artarch_node_kind_details`; node proximity is not a dependency.
 Keep keyframe and clip lineage visible. If an accepted paid artifact must feed a
 later run without regeneration, materialize it as an input node before connecting
 it downstream.

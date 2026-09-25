@@ -33,7 +33,8 @@ names and business concepts; the MCP server owns persistence and collaboration d
 
 2. Inspect the selected whiteboard:
 
-   - Call `artarch_whiteboard_nodes` to inspect visible items and kinds.
+   - Call `artarch_whiteboard_nodes` with `projectId` and `canvasId` to inspect
+     visible items and kinds. Pass `nodeId` to inspect just one known item.
    - Call `artarch_canvas_link` when the user needs to inspect the board in Studio.
    - For an existing board, inventory its frames and items first. Propose the
      exact additions or replacements and obtain explicit authorization before
@@ -79,7 +80,8 @@ names and business concepts; the MCP server owns persistence and collaboration d
    - Replace an item with `removeNode` followed by `addNode` using the same item ID.
    - Remove or add document edges with `removeEdge` and `addEdge`.
    - Never edit or remove `_toolcanvas_whiteboard_document_v1_`.
-   - Read the whiteboard back with `artarch_whiteboard_nodes` after the edit.
+   - Read the whiteboard back with `artarch_whiteboard_nodes` after the edit;
+     use `nodeId` for a focused item check when available.
 
 5. Keep whiteboard layout under user control. Do not call
    `artarch_canvas_layout`, business DAG node tools, or generation tools while
@@ -105,7 +107,8 @@ names and business concepts; the MCP server owns persistence and collaboration d
 ## Verification
 
 After each meaningful change, use `artarch_whiteboard_nodes` to verify the
-visible item changes. The MCP edit response also confirms that the submitted
+visible item changes; pass `nodeId` when checking one known item. The MCP edit
+response also confirms that the submitted
 node and edge operations survived a server read-back. Verify each uploaded
 item's CDN URL, non-empty `description`, and `frameId` in browse results when
 the connected server supports the fields. Report project, canvas, and item

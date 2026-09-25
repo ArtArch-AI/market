@@ -125,9 +125,12 @@ Specify interaction in the brief:
 
 Inspect real capabilities before choosing node settings:
 
-- Call `artarch_canvas_describe` with no arguments; project and canvas scope are
-  already selected in the MCP session.
-- Call `artarch_node_kinds` with an optional `query`.
+- Call `artarch_canvas_describe` with `projectId` and `canvasId` for summaries;
+  use a `nodeId` for saved settings, execution, results, and adjacent
+  connections. This is not a live progress check.
+- Discover kinds with `artarch_node_kinds` (optional `query`), then inspect
+  `artarch_node_kind_details` for each selected kind/model. Reuse details for
+  repeat nodes and refresh when changing models.
 
 Prefer image-to-video from an approved still when identity, product geometry, or
 composition is fragile. Connect references only through business slots verified by the
@@ -143,7 +146,7 @@ trigger, progression, endpoint, single camera move, and continuity locks.
 
 For every required bridge, wait until both adjacent shots are approved. Extract
 and record the previous final frame and next first frame, then inspect
-`artarch_node_kinds` and connect them only through verified start/end or reference
+`artarch_node_kind_details` and connect them only through verified start/end or reference
 slots. Give each frame one authority. Prompt one continuous transition that
 leaves the previous shot and lands on the next while preserving camera direction,
 motion vector, subject position, horizon, lighting, exposure, and grade. Treat

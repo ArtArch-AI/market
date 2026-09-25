@@ -91,8 +91,12 @@ explicit product contract.
 
    - Call `artarch_scope_options` to find `projectId`; pass `projectId` to list
      canvases and find `canvasId`. Reuse a project only with user approval.
-   - Call `artarch_canvas_describe` with `projectId` and `canvasId`, then
-     `artarch_node_kinds` with an optional `query`.
+   - Call `artarch_canvas_describe` with `projectId` and `canvasId` for node
+     summaries; pass a `nodeId` for saved settings, execution, results, and
+     adjacent connections. This is not live run progress. Discover types with
+     `artarch_node_kinds` (optional `query`), then call
+     `artarch_node_kind_details` for selected kinds/models. Reuse details for
+     repeat nodes and refresh when changing models.
 
 3. Read existing run results before starting paid work. Record the source node,
    run reference, artifact URL or path, dimensions, duration, and approval state for each
@@ -184,7 +188,7 @@ motion vector, horizon, lighting, exposure, and grade. Reject a bridge that mere
 morphs, crossfades, introduces an unrelated spectacle, or fails to land on B.
 
 Before applying it, confirm the actual node settings and connected references with
-`artarch_node_kinds`. Give each input one authority such as composition, identity,
+`artarch_node_kind_details`. Give each input one authority such as composition, identity,
 environment, style, start frame, or end frame.
 
 For true 3D, inspect the actual model rather than assuming it is articulated.
