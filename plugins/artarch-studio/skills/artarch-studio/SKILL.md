@@ -98,11 +98,10 @@ error and call `artarch_node_kinds` again before retrying.
 
 For generation nodes exposing `aspect_ratio`, change the output shape with
 `settings: {"aspect_ratio": "9:16"}` only when that exact value is offered for
-the selected model. The MCP normalizes the ratio and synchronizes its width
-and height; do not resend stale dimensions or write internal `#` fields.
-This applies to add, configure, and batch operations. Inspect the result with
-`artarch_canvas_describe` before running generation. A parameter update does
-not regenerate existing outputs or change their actual media dimensions.
+the selected model. This applies to add, configure, and batch operations.
+Inspect the result with `artarch_canvas_describe` before running generation. A
+parameter update does not regenerate existing outputs or change their actual
+media dimensions.
 
 When changing a model, inspect its available settings and explicitly supply
 the desired supported resolution, quality, duration, mode, and aspect ratio
@@ -238,8 +237,11 @@ cannot wait or poll in the background, do
 not busy-wait or spend repeated conversation turns polling; retain the run
 references and check again when the host permits. If the MCP server exposes
 `artarch_canvas_run_progress`, call that named tool with both IDs to list the
-canvas's running nodes and progress; otherwise rely on per-run
-`artarch_run_status`. Do not try an unadvertised operation name through
+canvas's running nodes and progress. For a known run ID, prefer
+`artarch_run_progress` with `projectId`, `canvasId`, and `runId`; it returns
+that run's progress without a canvas-wide query. Use `artarch_run_status` when
+the completed result must also be synchronized back to the canvas. Do not try
+an unadvertised operation name through
 `artarch_read` or claim canvas-wide progress is available. Show only assets with a
 non-empty HTTP(S) URL; pending or empty results must not be rendered as media.
 Run and status calls synchronize execution state, completed outputs, downstream
