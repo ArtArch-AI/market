@@ -96,6 +96,20 @@ display. Never invent or silently substitute a model, aspect ratio, resolution,
 quality, duration, or mode. If validation rejects a value, show the specific
 error and call `artarch_node_kinds` again before retrying.
 
+For generation nodes exposing `aspect_ratio`, change the output shape with
+`settings: {"aspect_ratio": "9:16"}` only when that exact value is offered for
+the selected model. The MCP normalizes the ratio and synchronizes its width
+and height; do not resend stale dimensions or write internal `#` fields.
+This applies to add, configure, and batch operations. Inspect the result with
+`artarch_canvas_describe` before running generation. A parameter update does
+not regenerate existing outputs or change their actual media dimensions.
+
+When changing a model, inspect its available settings and explicitly supply
+the desired supported resolution, quality, duration, mode, and aspect ratio
+where applicable. Do not assume a model-only update resets dependent settings.
+Whiteboard card geometry is separate from generation settings: use whiteboard
+editing operations for card size and placement, not `settings.aspect_ratio`.
+
 For a selected model, inspect `option.constraints.inputLimits` before connecting
 reference media. It may specify image, video, or audio counts, per-video and
 total reference duration, accepted audio formats, or whether audio may be the
