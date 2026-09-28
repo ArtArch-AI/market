@@ -13,6 +13,13 @@ description: >-
 Use the remote ArtArch MCP server. No local ArtArch executable is required. Never ask the user for storage identifiers, connection
 encodings, collaboration details, or raw canvas documents.
 
+Read this skill from the exact path provided by the current session's skill
+catalog. Follow that path's symlink to its source when present. Do not guess a
+bundled-plugin path or select an arbitrary search result from versioned caches,
+backups, or marketplace staging directories. If the advertised path is missing,
+inspect the active plugin registration and resolve its installed path; report a
+broken installation if it cannot be resolved. Do not silently load an older copy.
+
 All creative actions must use the ArtArch MCP tools. Do not use Computer Use,
 website controls, WebMCP, or the ArtArch website UI as a fallback for creating,
 editing, or generating content. If ArtArch MCP tools are absent, report that the
@@ -102,6 +109,13 @@ Do not make the user design nodes or explain the canvas implementation.
    not live progress; an unavailable estimate must remain unknown and must not
    be treated as zero.
 
+Report `pricing.status` and `pricing.balanceStatus` independently; a failed
+balance lookup also returns `balance.status: unavailable`. A successful balance
+contains `totalCredits`, `source`, and `details`. An unavailable balance does not
+invalidate an available credit estimate, and an available estimate does not prove
+the account has enough credits. Preserve each returned status and state which
+lookup failed; do not describe both as unavailable when only one failed.
+
 Treat every returned `options` list as a closed enum already filtered for the
 current membership. Pass the exact `option.value`; use `option.label` only for
 display. Never invent or silently substitute a model, aspect ratio, resolution,
@@ -148,6 +162,13 @@ the project and writes the CDN URL to the input node before persisting it.
 Do not also set the node's image/video setting when passing `media`. An
 existing project-owned CDN URL can instead be supplied through the visible
 business parameter key returned by `artarch_node_kind_details` without reuploading.
+
+For an accessible local presenter image or other user-supplied media, read and
+encode the file programmatically and pass the bytes through these upload fields.
+Do not print the payload in the conversation or logs. A public URL is not a
+prerequisite for local uploads; do not ask the user to host the file merely
+because the MCP server is remote. If the host cannot transfer local bytes, name
+that specific limitation instead of claiming ArtArch lacks upload support.
 
 `artarch_asset_upload` remains optional for Image/Video Input: use it when the
 asset must be uploaded independently or reused across nodes. For local audio,

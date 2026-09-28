@@ -22,6 +22,16 @@ the first MCP tool is called. In Claude Code, use its native MCP connection flow
 Confirm access in the ArtArch browser page. Each client stores and refreshes its
 own credentials securely.
 
+For local skill development, keep the enabled plugin's `skills` directory linked
+to this repository's `plugins/artarch-studio/skills`. Resolve the path supplied by
+the current session's skill catalog and verify its symlink target; a versioned
+cache directory name does not identify the content behind a symlink. Do not pick
+an arbitrary `find` result: ordinary `find` skips linked directory contents while
+still discovering obsolete physical cache copies. Remove inactive copies and
+keep backups outside the host's skill, plugin cache, and marketplace staging
+trees. An existing conversation must re-read the current skill before resuming;
+editing the source cannot replace instructions already read into that context.
+
 WorkBuddy connector submission (requires WorkBuddy 4.24.0 or newer):
 
 1. From the parent Sisyphus repository, run `python3 scripts/export-workbuddy-connector.py`.
