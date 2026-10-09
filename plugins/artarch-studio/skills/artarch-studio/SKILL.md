@@ -109,6 +109,26 @@ Do not make the user design nodes or explain the canvas implementation.
    not live progress; an unavailable estimate must remain unknown and must not
    be treated as zero.
 
+### Multi-track video nodes
+
+For a node whose business kind is `sequence_multi_track_storyboard_format`, use
+`artarch_track_video` for timeline work. Start with `action: "inspect"` or
+`"validate"`; use `"plan"` for edits that add, update, remove, or replace track
+items, and show its diagnostics and warnings before applying. Call
+`action: "apply"` only with the reviewed operations and `confirmed: true`.
+Apply persists the timeline and aligned list slots but does not start generation;
+use `artarch_run` separately when the user authorizes a run.
+
+Represent timeline positions in integer frames. Keep at least one valid
+`mainTrack.clips` item, use unique non-empty IDs within each track, and keep
+`durationInFrames` consistent with the main-track end frame (gaps and transition
+overlap included). Validate video trim ranges against `durationInSeconds`, keep
+overlay and subtitle ranges non-negative, and keep audio volumes in the 0–1
+range. Preserve `imageVideoList` slot order and `null` placeholders when a
+source slot is unavailable; `sourceIndex` is an internal mapping hint and must
+not be sent to the renderer. Do not write an unvalidated `videoConfig` through
+`artarch_node_configure`.
+
 Report `pricing.status` and `pricing.balanceStatus` independently; a failed
 balance lookup also returns `balance.status: unavailable`. A successful balance
 contains `totalCredits`, `source`, and `details`. An unavailable balance does not
