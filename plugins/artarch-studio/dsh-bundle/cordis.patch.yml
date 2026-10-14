@@ -1,0 +1,21 @@
+- insert:
+    - id: artarch-studio-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: artarch
+        transport: streamable-http
+        url: 'https://apit.artarch.ai/sisyphus/mcp'
+        failOnStartupError: false
+        reconnect:
+          enabled: true
+
+- insert:
+    - id: artarch-studio
+      name: '@artarch/dsh-studio'
+      config:
+        apiBaseUrl: 'https://apit.artarch.ai/sisyphus'
+        authorizeUrl: 'https://appt.artarch.ai/login'
+        tokenUrl: 'https://apit.artarch.ai/avatar/api/v1/oauth/cli/token'
+        clientId: 'sisyphus'
+        callbackPath: '/artarch-api/oauth/callback'
+        studioUrl: 'https://appt.artarch.ai/products/studio'
