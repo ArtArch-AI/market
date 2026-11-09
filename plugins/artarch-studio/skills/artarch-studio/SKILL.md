@@ -209,6 +209,29 @@ MCP tool plan. Ask for confirmation before `artarch_canvas_brief_apply` with the
 only creates and connects nodes and never starts generation. A live Jev call is performed by the authenticated MCP service. If the MCP
 connection is unavailable, stop and report the connection error.
 
+## Workspace, reads, and recovery
+
+- `artarch_render_workspace` opens the MCP workspace UI in hosts that support
+  MCP Apps. It does not select a project or canvas; subsequent calls still need
+  explicit IDs. Hosts without MCP Apps can use the same business tools directly.
+- `artarch_read` performs a read-only operation such as `project.list`,
+  `canvas.list` (requires `projectId`), or `canvas.get` (requires both IDs).
+  Pass operation-specific filters in `input`; use the named business tools for
+  normal canvas work. `artarch_mutate` requires `confirmed: true` and explicit
+  IDs for scoped operations such as `canvas.rename` or `canvas.delete`.
+- `artarch_canvas_layout` arranges a workflow canvas using both IDs and
+  `confirmed: true`. Inspect the saved result afterward; do not apply it to a
+  whiteboard.
+- `artarch_history_preview` requires both IDs. Omit `version` to list history
+  (`limit` is optional), then pass a positive `version` to inspect that snapshot.
+  Show the intended version and impact before `artarch_history_restore` with
+  the same IDs, that `version`, and `confirmed: true`; read the canvas afterward.
+  A restore changes saved canvas state and does not start generation.
+- `artarch_reference_bundle` packages existing whiteboard references without
+  changing the board. First call `artarch_whiteboard_nodes` with both IDs, then
+  pass its returned reference strings in `references` with the same IDs. Do not
+  invent references or substitute raw canvas documents.
+
 ## Generation
 
 Default to **one user approval per node submission**, including image, video,
@@ -367,7 +390,8 @@ https://api.artarch.ai/sisyphus/mcp and browser login at https://www.artarch.ai.
 Use the host client's native MCP connection flow. In Codex Desktop, install the
 plugin, start a new conversation, and ask to use ArtArch Studio. If the connection
 is not authorized, the host prompts for authorization or opens the browser during
-the first MCP tool call. Sign in at `https://www.artarch.ai` and approve the requested
+connection initialization. The server returns HTTP 401 with a
+`WWW-Authenticate` resource metadata challenge until authorization succeeds. Sign in at `https://www.artarch.ai` and approve the requested
 access; the host stores and refreshes credentials securely. Never ask the user to
 copy a key or token, install an ArtArch binary, or run a CLI command. If OAuth
 fails, show the connection error and retry the host's connection flow.

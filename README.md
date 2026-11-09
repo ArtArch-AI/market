@@ -17,8 +17,8 @@ claude plugin install artarch-studio@artarch
 ```
 
 Reload plugins and start a new task. In Codex Desktop, ask the new conversation to
-use ArtArch Studio; the host may prompt for authorization or open the browser when
-the first MCP tool is called. In Claude Code, use its native MCP connection flow.
+use ArtArch Studio; the host may prompt for authorization or open the browser during
+MCP connection initialization. In Claude Code, use its native MCP connection flow.
 Confirm access in the ArtArch browser page. Each client stores and refreshes its
 own credentials securely.
 
@@ -44,9 +44,14 @@ WorkBuddy connector submission (requires WorkBuddy 4.24.0 or newer):
    as downloadable or published before approval.
 
 The connector leaves `auth_mode` unset for the standard MCP OAuth flow.
-Reported read-only OAuth discovery checks returned HTTP 200; WorkBuddy dynamic client
-registration and callback have **not** been verified end-to-end. Verify those
-before claiming a working WorkBuddy sign-in. No local CLI fallback is provided.
+The WorkBuddy 5.9.3 clean-chat audit discovered the tool catalogue, but business
+calls were blocked by authentication. Review also found that Avatar dynamic
+client registration rejects WorkBuddy callbacks. WorkBuddy sign-in is therefore
+**not verified end-to-end**. The Sisyphus repair requires HTTP 401 plus the native
+OAuth challenge during initialization, matching skill/tool contracts, and
+public root/resource metadata routing. Deploy those changes and fix Avatar's
+WorkBuddy redirect allowlist before repeating installation, browser approval,
+callback, and authenticated business calls in a fresh chat. No local CLI fallback is provided.
 
 This release connects to the production environment at `https://api.artarch.ai/sisyphus/mcp`.
 Sign in with your ArtArch account at `https://www.artarch.ai`.
